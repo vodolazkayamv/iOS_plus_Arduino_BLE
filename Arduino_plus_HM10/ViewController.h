@@ -7,8 +7,30 @@
 //
 
 #import <UIKit/UIKit.h>
+#import <CoreBluetooth/CoreBluetooth.h>
 
-@interface ViewController : UIViewController
+#define TIMER_PAUSE_INTERVAL 10.0
+#define TIMER_SCAN_INTERVAL  2.0
+
+#define SENSOR_DATA_INDEX_TEMP_INFRARED 0
+#define SENSOR_DATA_INDEX_TEMP_AMBIENT  1
+#define SENSOR_DATA_INDEX_HUMIDITY_TEMP 0
+#define SENSOR_DATA_INDEX_HUMIDITY      1
+
+#define SENSOR_TAG_NAME @"HMSoft"
+
+
+@interface ViewController : UIViewController <CBCentralManagerDelegate, CBPeripheralDelegate>
+
+@property (nonatomic, strong) CBCentralManager *centralManager;
+@property (nonatomic, strong) CBPeripheral *sensorTag;
+
+@property (weak, nonatomic) IBOutlet UILabel *tempLabel;
+@property (weak, nonatomic) IBOutlet UILabel *LPGlabel;
+@property (weak, nonatomic) IBOutlet UILabel *methaneLabel;
+@property (weak, nonatomic) IBOutlet UILabel *smokeLabel;
+@property (weak, nonatomic) IBOutlet UILabel *hydrogenLabel;
+@property (weak, nonatomic) IBOutlet UILabel *stateLabel;
 
 
 @end
