@@ -22,7 +22,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
     self.tempLabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:56];
-    self.LPGlabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:56];
+    self.LPGLabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:56];
     self.methaneLabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:56];
     self.smokeLabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:56];
     self.hydrogenLabel.font = [UIFont fontWithName:@"HelveticaNeue-Thin" size:56];
@@ -40,39 +40,29 @@
 
 #pragma mark - UI methods
 
-- (void) displayTemperature:(NSData *)dataBytes {
-    NSString *str = [[NSString alloc] initWithData:dataBytes encoding:NSUTF8StringEncoding];
-    NSLog(@"TEMPERATURE: %@ grad", str);
-    
-    self.tempLabel.text = str;
+- (void) displayTemperature:(NSString *)dataBytes {
+    NSLog(@"TEMPERATURE: %@ grad", dataBytes);
+    self.tempLabel.text = dataBytes;
 }
 
-- (void) displayLPG:(NSData *)dataBytes {
-    NSString *str = [[NSString alloc] initWithData:dataBytes encoding:NSUTF8StringEncoding];
-    NSLog(@"LPG: %@ ppm", str);
-    
-    self.LPGlabel.text = str;
+- (void) displayLPG:(NSString *)dataBytes {
+    NSLog(@"LPG: %@ ppm", dataBytes);
+    self.LPGLabel.text = dataBytes;
 }
 
-- (void) displayMethane:(NSData *)dataBytes {
-    NSString *str = [[NSString alloc] initWithData:dataBytes encoding:NSUTF8StringEncoding];
-    NSLog(@"Methane: %@ ppm", str);
-    
-    self.methaneLabel.text = str;
+- (void) displayMethane:(NSString *)dataBytes {
+    NSLog(@"Methane: %@ ppm", dataBytes);
+    self.methaneLabel.text = dataBytes;
 }
 
-- (void) displaySmoke:(NSData *)dataBytes {
-    NSString *str = [[NSString alloc] initWithData:dataBytes encoding:NSUTF8StringEncoding];
-    NSLog(@"Smoke: %@ ppm", str);
-    
-    self.smokeLabel.text = str;
+- (void) displaySmoke:(NSString *)dataBytes {
+    NSLog(@"Smoke: %@ ppm", dataBytes);
+    self.smokeLabel.text = dataBytes;
 }
 
-- (void) displayHydrogen:(NSData *)dataBytes {
-    NSString *str = [[NSString alloc] initWithData:dataBytes encoding:NSUTF8StringEncoding];
-    NSLog(@"Hydrogen: %@ ppm", str);
-    
-    self.hydrogenLabel.text = str;
+- (void) displayHydrogen:(NSString *)dataBytes {
+    NSLog(@"Hydrogen: %@ ppm", dataBytes);
+    self.hydrogenLabel.text = dataBytes;
     NSLog(@"-----------------------------");
 }
 
@@ -216,32 +206,38 @@
     } else {
         // extract the data from the characteristic's value property and display the value based on the characteristic type
         NSData *dataBytes = characteristic.value;
-        NSLog(@"Characteristic: %@", characteristic.UUID );
         
-        switch (serialNum)
+        NSString *str = [[NSString alloc] initWithData:dataBytes encoding:NSUTF8StringEncoding];
+        NSLog(@"Characteristic: %@, %@", characteristic.UUID, str );
+        
+        NSString *value = [str substringFromIndex:2];
+        NSString *index = [str substringToIndex:1];
+        int ind = [index integerValue];
+        
+        // as we have only one characteristic on HM-10, using SoftwareSerial updates FFF1 over and over
+        // so we cycle through 5 updates, as we know in which order Arduino writes data to SoftwareSerial
+        switch (ind)
         {
             case 0:
-                [self displayTemperature:dataBytes];
+                //[self displayTemperature:value];
                 serialNum++;
                 break;
             case 1:
-                [self displayLPG:dataBytes];
-                serialNum++;
+                [self displayTemperature:value];
                 break;
             case 2:
-                [self displayMethane:dataBytes];
-                serialNum++;
+                [self displayLPG:value];
                 break;
             case 3:
-                [self displaySmoke:dataBytes];
-                serialNum++;
+                [self displayMethane:value];
                 break;
             case 4:
-                [self displayHydrogen:dataBytes];
-                serialNum = 0;
+                [self displaySmoke:value];
                 break;
             case 5:
-                serialNum = 0;
+                [self displayHydrogen:value];
+                break;
+            case 6:
                 break;
             default:
                 NSLog (@"serialNum out of range");

@@ -83,7 +83,7 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="LPGlabel" destination="umb-58-rZd" id="lSu-Hh-hIx"/>
+                        <outlet property="LPGLabel" destination="umb-58-rZd" id="lSu-Hh-hIx"/>
                         <outlet property="hydrogenLabel" destination="C7d-Yh-UtU" id="m1O-cd-eQn"/>
                         <outlet property="methaneLabel" destination="xNt-tE-ATH" id="9ag-U6-3zp"/>
                         <outlet property="smokeLabel" destination="xjb-XF-abn" id="cxM-Zd-f16"/>
